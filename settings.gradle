@@ -1,0 +1,4 @@
+rootProject.name = "ReduxByKotlin"
+include ':app'
+include ':redux'
+include ':redux_sample'
