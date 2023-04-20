@@ -17,18 +17,15 @@ class Test {
         val infoReducer = InfoReducer(Info("name"))
 
         /*把定义好的plan函数传入*/
-        val list = mutableListOf<Reducer<out State>>().apply {
-            this.add(counterReducer)
-            this.add(infoReducer)
-        }
+        val list = mutableListOf<Reducer<out State>>(counterReducer,infoReducer)
 
 
-
-        val createStore = IStore.createStore
         /*没有中间件的 createStore*/
-        val store = createStore(counterReducer)
+        val store = IStore.createStore(counterReducer)
 
-        val store2= applyMiddleware(exceptionMiddleware1, timeMiddleware1, logMiddleware1)(createStore)(list.combineReducers())
+        val store2= applyMiddleware(mutableListOf(exceptionMiddleware1, timeMiddleware1, logMiddleware1))(IStore.createStore)(list.combineReducers())
+
+        val store3 = IStore.createStore(mutableListOf(exceptionMiddleware1, timeMiddleware1, logMiddleware1),mutableListOf(counterReducer,infoReducer))
 
         store2.subscribe {
             val info = store2.state.getData(Info::class.java)

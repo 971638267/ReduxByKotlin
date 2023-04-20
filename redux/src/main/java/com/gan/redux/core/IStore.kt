@@ -44,7 +44,7 @@ class IStore {
         }
 
 
-        fun applyMiddleware(vararg middlewares: Middleware): RewriteCreateStoreFunc {
+        fun applyMiddleware( middlewares: MutableList<Middleware>): RewriteCreateStoreFunc {
             return fun(oldCreateStore: CreateStore): CreateStore {
                 return fun(reducer: Reducer<out State>): Store {
                     val store = oldCreateStore(reducer)
@@ -69,6 +69,13 @@ class IStore {
                     return store
                 }
             }
+        }
+
+        fun createStore(
+            middlewares: MutableList<Middleware>,
+            plans:MutableList<Reducer<out State>>
+        ): Store {
+           return applyMiddleware(middlewares)(createStore)(plans.combineReducers())
         }
     }
 
